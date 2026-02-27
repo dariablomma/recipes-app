@@ -6,10 +6,7 @@ import com.daria.recipe.app.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -17,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecipeController {
     private final RecipeService recipeService;
 
-    public ResponseEntity<RecipeCreateResponse> createRecipe(@Valid @RequestBody RecipeCreateRequest request) {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public RecipeCreateResponse createRecipe(@Valid @RequestBody RecipeCreateRequest request) {
         RecipeCreateResponse createdRecipe = recipeService.createRecipe(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRecipe);
+        return createdRecipe;
     }
 }
