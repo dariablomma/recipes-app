@@ -5,16 +5,14 @@ import com.daria.recipe.app.dto.RecipeCreateResponse;
 import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.RecipeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RecipeService {
-    @Autowired
-    private RecipeRepository recipeRepository;
-
-    @Autowired
-    private RecipeMapper recipeMapper;
+    private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
 
     public RecipeCreateResponse createRecipe(RecipeCreateRequest createRequest) {
        // todo: add validation of userId, categoryId
