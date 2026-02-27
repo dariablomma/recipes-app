@@ -20,6 +20,6 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(mappedBy =  "user")
+    @OneToMany(mappedBy =  "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
 }
