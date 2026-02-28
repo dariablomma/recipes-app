@@ -15,9 +15,14 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
+    private String userName; // login name
 
     @Column(nullable = false)
+    private String password;
+
+    private String email;
+
+    private String firstName;
     private String lastName;
 
     @OneToMany(mappedBy =  "user", fetch = FetchType.LAZY)
