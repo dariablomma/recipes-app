@@ -19,3 +19,4 @@ Small app to keep your favourite recipes always with you! This is modern alterna
 - Global exception handler with @ControllerAdvice
 - clean architecture (controller - service - repository - entity)
 - DTO usage
+- Profile-based configuration with named beans (dev/prod environments with different PasswordEncoder implementations)
