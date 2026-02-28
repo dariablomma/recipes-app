@@ -1,16 +1,17 @@
 package com.daria.recipe.app.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 
 @Data
-@Component
 @ConfigurationProperties(prefix = "jwt")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtProperties {
     private String secret;
 

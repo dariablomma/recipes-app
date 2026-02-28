@@ -10,14 +10,14 @@ import java.util.Optional;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    @Query("SELECT r FROM Recipe r JOIN FETCH r.category  WHERE  r.id - :id")
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.category  WHERE  r.id = :id")
     Optional<Recipe> findByIdWithCategory(@Param("id") Long id);
 
     @Query("""
         SELECT r FROM Recipe r 
         JOIN FETCH r.category 
         JOIN FETCH r.user    
-        WHERE  r.id - :id
+        WHERE  r.id = :id
     """)
     Optional<Recipe> findByIdWithCategoryAndUser(@Param("id") Long id);
 }

@@ -12,5 +12,5 @@ public class UserResponse {
     private String email;
     private String firstName;
     private String lastName;
-    private List<Long> recipes;
+    private List<Long> recipeIds;
 }
