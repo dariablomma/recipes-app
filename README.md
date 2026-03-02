@@ -7,7 +7,7 @@ Small app to keep your favourite recipes always with you! This is modern alterna
 ### Backend
 
 - Java 21
-- Spring Boot (annotations)
+- Spring Boot v4 (annotations)
 - Maven
 - PostgreSQL
 - Docker Compose
