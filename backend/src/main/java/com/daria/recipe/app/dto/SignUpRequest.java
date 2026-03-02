@@ -13,11 +13,11 @@ public class SignUpRequest {
     @Size(min = 2, max = 200, message = "User name must be between 2 and 200 characters")
     private String userName;
 
-    @NotBlank(message = "User name is required")
+    @NotBlank(message = "User email is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "User name is required")
+    @NotBlank(message = "User password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 }

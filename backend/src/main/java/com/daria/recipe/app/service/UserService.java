@@ -1,14 +1,20 @@
 package com.daria.recipe.app.service;
 
+import com.daria.recipe.app.dto.LoginRequest;
 import com.daria.recipe.app.dto.SignUpRequest;
 import com.daria.recipe.app.dto.UserResponse;
 import com.daria.recipe.app.entity.User;
 import com.daria.recipe.app.exception.ConflictException;
+import com.daria.recipe.app.exception.InvalidRequestException;
+import com.daria.recipe.app.exception.ResourceNotFoundException;
+import com.daria.recipe.app.exception.UnauthorizedException;
 import com.daria.recipe.app.mapper.UserMapper;
 import com.daria.recipe.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +38,18 @@ public class UserService {
 
         User savedUser = userRepository.save(userForSaving);
         return userMapper.toResponse(savedUser);
+    }
+
+    public UserResponse login(LoginRequest request) {
+        String error = "Invalid username or password";
+        User user  = userRepository
+                .findByUserName(request.getUserName())
+                .orElseThrow(() -> new UnauthorizedException(error));
+
+        if (!passwordEncoder.matches(user.getPassword(), request.getPassword())) {
+            throw new UnauthorizedException(error);
+        }
+
+        return userMapper.toResponse(user);
     }
 }

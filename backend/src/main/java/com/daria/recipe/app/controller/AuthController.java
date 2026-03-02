@@ -1,8 +1,10 @@
 package com.daria.recipe.app.controller;
 
 import com.daria.recipe.app.dto.AuthResponse;
+import com.daria.recipe.app.dto.LoginRequest;
 import com.daria.recipe.app.dto.SignUpRequest;
 import com.daria.recipe.app.dto.UserResponse;
+import com.daria.recipe.app.entity.User;
 import com.daria.recipe.app.security.JwtService;
 import com.daria.recipe.app.service.UserService;
 import jakarta.validation.Valid;
@@ -21,18 +23,28 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse signUp(@Valid @RequestBody SignUpRequest request) {
         UserResponse userResponse = userService.signUp(request);
-        String jwtToken = jwtService.generateToken(
-                userResponse.getUserName(),
-                userResponse.getId(),
-                userResponse.getEmail()
+        return buildAuthResponse(userResponse);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+        UserResponse userResponse = userService.login(request);
+        return buildAuthResponse(userResponse);
+    }
+
+    private AuthResponse buildAuthResponse(UserResponse user) {
+        String token = jwtService.generateToken(
+                user.getUserName(),
+                user.getId(),
+                user.getEmail()
         );
 
-        return AuthResponse
-                .builder()
-                .token(jwtToken)
+        return AuthResponse.builder()
+                .token(token)
                 .expiresIn(jwtService.getExpiresInSeconds())
-                .userName(userResponse.getUserName())
-                .userId(userResponse.getId())
+                .userName(user.getUserName())
+                .userId(user.getId())
                 .build();
     }
 }
