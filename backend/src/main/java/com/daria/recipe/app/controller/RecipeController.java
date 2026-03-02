@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/recipes")
+@RequestMapping("/recipes")
 @RequiredArgsConstructor
 public class RecipeController {
     private final RecipeService recipeService;
@@ -17,7 +17,6 @@ public class RecipeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RecipeCreateResponse createRecipe(@Valid @RequestBody RecipeCreateRequest request) {
-        RecipeCreateResponse createdRecipe = recipeService.createRecipe(request);
-        return createdRecipe;
+        return recipeService.createRecipe(request);
     }
 }
