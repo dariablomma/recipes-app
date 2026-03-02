@@ -7,7 +7,7 @@ Small app to keep your favourite recipes always with you! This is modern alterna
 ### Backend
 
 - Java 21
-- Spring Boot v4 (annotations)
+- Spring Boot v4
 - Maven
 - PostgreSQL
 - Docker Compose
@@ -16,7 +16,7 @@ Small app to keep your favourite recipes always with you! This is modern alterna
 - JPA/Hibernate
 - Lombok
 - MapStruct
-- Global exception handler with @ControllerAdvice
+- Global exception handler with @RestControllerAdvice
 - clean architecture (controller - service - repository - entity)
 - DTO usage
 - Profile-based configuration with named beans (dev/prod environments with different PasswordEncoder implementations)
