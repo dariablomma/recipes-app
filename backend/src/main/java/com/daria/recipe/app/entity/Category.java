@@ -19,4 +19,5 @@ public class Category {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
+    // add: createdAt, updatedAt, deletedAt
 }
