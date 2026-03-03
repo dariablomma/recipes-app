@@ -8,11 +8,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Recipe toEntity(RecipeCreateRequest request);
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "catgory.id", target = "categoryId")
     RecipeCreateResponse toResponse(Recipe recipe);
-
-    // todo: categoryId, userId -> Category, User
 }

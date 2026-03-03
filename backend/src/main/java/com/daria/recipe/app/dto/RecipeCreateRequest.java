@@ -16,9 +16,6 @@ public class RecipeCreateRequest {
     @NotNull(message =  "Category Id is required")
     private Long categoryId;
 
-    @NotNull(message = "User Id is required")
-    private Long userId;
-
     private String externalLink; // YouTube or other platforms links, where recipe is uploaded
 
     private String description;

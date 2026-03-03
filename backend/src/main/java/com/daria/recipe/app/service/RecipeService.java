@@ -2,7 +2,9 @@ package com.daria.recipe.app.service;
 
 import com.daria.recipe.app.dto.RecipeCreateRequest;
 import com.daria.recipe.app.dto.RecipeCreateResponse;
+import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.entity.Recipe;
+import com.daria.recipe.app.entity.User;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
 import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
@@ -19,14 +21,19 @@ public class RecipeService {
     private final CategoryRepository categoryRepository;
     private final RecipeMapper recipeMapper;
 
-    public RecipeCreateResponse createRecipe(RecipeCreateRequest createRequest) {
-      if (!userRepository.existsById(createRequest.getUserId()))  {
-          throw new ResourceNotFoundException( "User not found with id: " + createRequest.getUserId());
-      }
-      if (!categoryRepository.existsById(createRequest.getCategoryId())) {
-          throw new ResourceNotFoundException("Category not found with id:" + createRequest.getCategoryId());
-      }
+    public RecipeCreateResponse createRecipe(Long userId, RecipeCreateRequest createRequest) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException( "User not found with id: " + userId));
+        Category category = categoryRepository
+                .findById(createRequest.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with id:" + createRequest.getCategoryId()
+                ));
+
        Recipe recipe = recipeMapper.toEntity(createRequest);
+       recipe.setCategory(category);
+       recipe.setUser(user);
+
        Recipe savedRecipe = recipeRepository.save(recipe);
        return recipeMapper.toResponse(savedRecipe);
     }

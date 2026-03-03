@@ -2,10 +2,12 @@ package com.daria.recipe.app.controller;
 
 import com.daria.recipe.app.dto.RecipeCreateRequest;
 import com.daria.recipe.app.dto.RecipeCreateResponse;
+import com.daria.recipe.app.security.CustomUserDetails;
 import com.daria.recipe.app.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +18,10 @@ public class RecipeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RecipeCreateResponse createRecipe(@Valid @RequestBody RecipeCreateRequest request) {
-        return recipeService.createRecipe(request);
+    public RecipeCreateResponse createRecipe(
+            @Valid @RequestBody RecipeCreateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return recipeService.createRecipe(userDetails.getId(), request);
     }
 }
