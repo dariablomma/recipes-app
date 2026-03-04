@@ -21,7 +21,10 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String externalLink; // YouTube or other platforms links, where recipe is uploaded
+    /**
+        YouTube or other platforms links, where recipe is uploaded
+     */
+    private String externalLink;
 
     private String description;
 }

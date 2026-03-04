@@ -1,7 +1,8 @@
 package com.daria.recipe.app.controller;
 
 import com.daria.recipe.app.dto.RecipeCreateRequest;
-import com.daria.recipe.app.dto.RecipeCreateResponse;
+import com.daria.recipe.app.dto.RecipeResponse;
+import com.daria.recipe.app.dto.RecipeUpdateRequest;
 import com.daria.recipe.app.security.CustomUserDetails;
 import com.daria.recipe.app.service.RecipeService;
 import jakarta.validation.Valid;
@@ -18,10 +19,20 @@ public class RecipeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RecipeCreateResponse createRecipe(
+    public RecipeResponse create(
             @Valid @RequestBody RecipeCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return recipeService.createRecipe(userDetails.getId(), request);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RecipeResponse update(
+            @PathVariable Long recipeId,
+            @Valid @RequestBody RecipeUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return recipeService.updateRecipe(userDetails.getId(), recipeId, request);
     }
 }
