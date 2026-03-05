@@ -19,8 +19,9 @@ Project illustrates usages of:
 - JPA/Hibernate
 - Lombok
 - MapStruct
-- Global exception handler with @RestControllerAdvice
+- global exception handler with @RestControllerAdvice
 - custom exceptions
 - clean architecture (controller - service - repository - entity)
 - DTO usage
-- Profile-based configuration with named beans (dev/prod environments with different PasswordEncoder implementations)
+- profile-based configuration with named beans (dev/prod environments with different PasswordEncoder implementations)
+- JSON Nullable example (see package with such name)
