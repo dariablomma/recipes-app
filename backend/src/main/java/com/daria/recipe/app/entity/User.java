@@ -25,6 +25,6 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @OneToMany(mappedBy =  "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
 }

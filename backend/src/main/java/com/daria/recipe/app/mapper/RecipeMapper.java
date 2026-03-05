@@ -14,7 +14,7 @@ public interface RecipeMapper {
     Recipe toEntity(RecipeCreateRequest request);
 
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "catgory.id", target = "categoryId")
+    @Mapping(source = "category.id", target = "categoryId")
     RecipeResponse toResponse(Recipe recipe);
 
     @Mapping(target = "category", ignore = true)

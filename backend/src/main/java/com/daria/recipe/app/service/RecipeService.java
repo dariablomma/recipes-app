@@ -50,6 +50,9 @@ public class RecipeService {
 
         if (request.getCategoryId().isPresent()) {
             Long categoryId = request.getCategoryId().get();
+            if (categoryId == null) {
+                throw new InvalidRequestException("Category id can not be null");
+            }
             Category category = categoryRepository
                     .findById(categoryId)
                     .orElseThrow(() -> new ResourceNotFoundException(

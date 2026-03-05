@@ -29,7 +29,7 @@ public class RecipeController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecipeResponse update(
-            @PathVariable Long recipeId,
+            @PathVariable("id") Long recipeId,
             @Valid @RequestBody RecipeUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
