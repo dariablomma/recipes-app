@@ -26,13 +26,13 @@ public class RecipeController {
         return recipeService.createRecipe(userDetails.getId(), request);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecipeResponse update(
             @PathVariable("id") Long recipeId,
             @Valid @RequestBody RecipeUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return recipeService.updateRecipe(userDetails.getId(), recipeId, request);
+        return recipeService.putRecipe(userDetails.getId(), recipeId, request);
     }
 }

@@ -6,9 +6,7 @@ import com.daria.recipe.app.dto.RecipeUpdateRequest;
 import com.daria.recipe.app.entity.Recipe;
 import org.mapstruct.*;
 
-@Mapper(uses = JsonNullableMapper.class,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface RecipeMapper {
     @Mapping(target = "category", ignore = true)
     Recipe toEntity(RecipeCreateRequest request);
@@ -18,5 +16,5 @@ public interface RecipeMapper {
     RecipeResponse toResponse(Recipe recipe);
 
     @Mapping(target = "category", ignore = true)
-    void update(RecipeUpdateRequest updateRequest, @MappingTarget Recipe recipe);
+    void update(RecipeUpdateRequest request, @MappingTarget Recipe recipe);
 }

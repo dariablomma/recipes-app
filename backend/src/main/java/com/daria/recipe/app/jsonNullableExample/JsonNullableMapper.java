@@ -1,4 +1,4 @@
-package com.daria.recipe.app.mapper;
+package com.daria.recipe.app.jsonNullableExample;
 
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;

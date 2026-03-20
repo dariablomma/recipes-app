@@ -1,4 +1,4 @@
-1.  Patch + JSON nullable
+1.  Put
 2. CreatedAt/UpdatedAt/DeletedAT
 3. Валидация в БД
 4. Обработчик ошибок в БД
