@@ -39,4 +39,11 @@ public class CategoryService {
         Category categorySaved = categoryRepository.save(category);
         return categoryMapper.toResponse(categorySaved);
     }
+
+    @Transactional
+    public CategoryResponse getOne(Long categoryId) {
+        Category category = categoryRepository.findByIdWithRecipes(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category with such id not found: " + categoryId));
+        return categoryMapper.toResponse(category);
+    }
 }

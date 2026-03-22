@@ -29,4 +29,9 @@ public class CategoryController {
     ) {
         return categoryService.update(categoryId, request);
     }
+
+    @GetMapping("/{id}")
+    public CategoryResponse getOne(@PathVariable("id") Long categoryId) {
+        return categoryService.getOne(categoryId);
+    }
 }
