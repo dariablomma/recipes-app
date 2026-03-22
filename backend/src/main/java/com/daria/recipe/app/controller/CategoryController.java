@@ -1,7 +1,8 @@
 package com.daria.recipe.app.controller;
 
-import com.daria.recipe.app.dto.CategoryRequest;
+import com.daria.recipe.app.dto.CategoryCreateRequest;
 import com.daria.recipe.app.dto.CategoryResponse;
+import com.daria.recipe.app.dto.CategoryUpdateRequest;
 import com.daria.recipe.app.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,16 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse create(@Valid @RequestBody CategoryRequest request) {
+    public CategoryResponse create(@Valid @RequestBody CategoryCreateRequest request) {
         return categoryService.create(request);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryResponse update(
+            @PathVariable("id") Long categoryId,
+            @Valid @RequestBody CategoryUpdateRequest request
+    ) {
+        return categoryService.update(categoryId, request);
     }
 }

@@ -11,6 +11,7 @@ import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
 import com.daria.recipe.app.repository.RecipeRepository;
 import com.daria.recipe.app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class RecipeService {
     private final CategoryRepository categoryRepository;
     private final RecipeMapper recipeMapper;
 
+    @Transactional
     public RecipeResponse createRecipe(Long userId, RecipeCreateRequest createRequest) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException( "User not found with id: " + userId));
@@ -40,6 +42,7 @@ public class RecipeService {
        return recipeMapper.toResponse(savedRecipe);
     }
 
+    @Transactional
     public RecipeResponse putRecipe (Long userId, Long recipeId, RecipeUpdateRequest request) {
         userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User not found with id: " + userId));
