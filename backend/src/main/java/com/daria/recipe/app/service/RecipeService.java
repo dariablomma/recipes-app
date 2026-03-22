@@ -67,4 +67,10 @@ public class RecipeService {
         Recipe savedRecipe = recipeRepository.save(recipe);
         return recipeMapper.toResponse(savedRecipe);
     }
+
+    public RecipeResponse getOne(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
+        return  recipeMapper.toResponse(recipe);
+    }
 }

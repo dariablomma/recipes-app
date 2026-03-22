@@ -35,4 +35,9 @@ public class RecipeController {
     ) {
         return recipeService.putRecipe(userDetails.getId(), recipeId, request);
     }
+
+    @GetMapping("/{id}")
+    public RecipeResponse getOne(@PathVariable("id") Long recipeId) {
+        return recipeService.getOne(recipeId);
+    }
 }
