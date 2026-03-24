@@ -1,7 +1,7 @@
-1.  Put
 2. CreatedAt/UpdatedAt/DeletedAT
 3. Валидация в БД
 4. Обработчик ошибок в БД
-5. Update dependecies
+5. Update dependecies ?
 6. spring-boot-starter-webmvc vs spring-boot-starter-web
 7. @NullMarked/Nullable for mappers
+8. shared and personal categories

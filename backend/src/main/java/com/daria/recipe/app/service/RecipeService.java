@@ -11,7 +11,7 @@ import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
 import com.daria.recipe.app.repository.RecipeRepository;
 import com.daria.recipe.app.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -68,9 +68,10 @@ public class RecipeService {
         return recipeMapper.toResponse(savedRecipe);
     }
 
+    @Transactional(readOnly = true)
     public RecipeResponse getOne(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
-        return  recipeMapper.toResponse(recipe);
+        return recipeMapper.toResponse(recipe);
     }
 }

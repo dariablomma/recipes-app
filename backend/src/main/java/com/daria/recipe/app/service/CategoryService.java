@@ -8,7 +8,7 @@ import com.daria.recipe.app.exception.ConflictException;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
 import com.daria.recipe.app.mapper.CategoryMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class CategoryService {
         return categoryMapper.toResponse(categorySaved);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CategoryResponse getOne(Long categoryId) {
         Category category = categoryRepository.findByIdWithRecipes(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Category with such id not found: " + categoryId));
