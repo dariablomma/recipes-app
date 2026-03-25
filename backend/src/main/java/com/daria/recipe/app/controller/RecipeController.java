@@ -1,8 +1,8 @@
 package com.daria.recipe.app.controller;
 
-import com.daria.recipe.app.dto.RecipeCreateRequest;
-import com.daria.recipe.app.dto.RecipeResponse;
-import com.daria.recipe.app.dto.RecipeUpdateRequest;
+import com.daria.recipe.app.dto.recipe.RecipeCreateRequest;
+import com.daria.recipe.app.dto.recipe.RecipeResponse;
+import com.daria.recipe.app.dto.recipe.RecipeUpdateRequest;
 import com.daria.recipe.app.security.CustomUserDetails;
 import com.daria.recipe.app.service.RecipeService;
 import jakarta.validation.Valid;

@@ -10,7 +10,7 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +24,9 @@ public class Recipe {
     /**
         YouTube or other platforms links, where recipe is uploaded
      */
+    @Column(length = 500)
     private String externalLink;
 
+    @Column(length = 2000)
     private String description;
 }

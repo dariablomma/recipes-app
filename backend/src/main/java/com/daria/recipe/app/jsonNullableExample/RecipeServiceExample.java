@@ -1,6 +1,6 @@
 package com.daria.recipe.app.jsonNullableExample;
 
-import com.daria.recipe.app.dto.RecipeResponse;
+import com.daria.recipe.app.dto.recipe.RecipeResponse;
 import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.exception.ResourceNotFoundException;

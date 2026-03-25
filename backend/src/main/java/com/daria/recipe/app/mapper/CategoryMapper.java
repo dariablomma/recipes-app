@@ -1,8 +1,8 @@
 package com.daria.recipe.app.mapper;
 
-import com.daria.recipe.app.dto.CategoryCreateRequest;
-import com.daria.recipe.app.dto.CategoryResponse;
-import com.daria.recipe.app.dto.CategoryUpdateRequest;
+import com.daria.recipe.app.dto.category.CategoryCreateRequest;
+import com.daria.recipe.app.dto.category.CategoryResponse;
+import com.daria.recipe.app.dto.category.CategoryUpdateRequest;
 import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.entity.Recipe;
 import org.mapstruct.Mapper;

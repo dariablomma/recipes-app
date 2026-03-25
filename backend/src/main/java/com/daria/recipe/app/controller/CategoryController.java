@@ -1,8 +1,8 @@
 package com.daria.recipe.app.controller;
 
-import com.daria.recipe.app.dto.CategoryCreateRequest;
-import com.daria.recipe.app.dto.CategoryResponse;
-import com.daria.recipe.app.dto.CategoryUpdateRequest;
+import com.daria.recipe.app.dto.category.CategoryCreateRequest;
+import com.daria.recipe.app.dto.category.CategoryResponse;
+import com.daria.recipe.app.dto.category.CategoryUpdateRequest;
 import com.daria.recipe.app.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

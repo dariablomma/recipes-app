@@ -1,8 +1,8 @@
 package com.daria.recipe.app.service;
 
-import com.daria.recipe.app.dto.RecipeCreateRequest;
-import com.daria.recipe.app.dto.RecipeResponse;
-import com.daria.recipe.app.dto.RecipeUpdateRequest;
+import com.daria.recipe.app.dto.recipe.RecipeCreateRequest;
+import com.daria.recipe.app.dto.recipe.RecipeResponse;
+import com.daria.recipe.app.dto.recipe.RecipeUpdateRequest;
 import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.entity.User;
