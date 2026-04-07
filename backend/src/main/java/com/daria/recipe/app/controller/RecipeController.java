@@ -40,4 +40,13 @@ public class RecipeController {
     public RecipeResponse getOne(@PathVariable("id") Long recipeId) {
         return recipeService.getOne(recipeId);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSoft(
+            @PathVariable("id") Long recipeId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+       recipeService.deleteSoft(userDetails.getId(), recipeId);
+    }
 }

@@ -6,6 +6,7 @@ import com.daria.recipe.app.dto.recipe.RecipeUpdateRequest;
 import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.entity.User;
+import com.daria.recipe.app.exception.ConflictException;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
 import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +76,22 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
         return recipeMapper.toResponse(recipe);
+    }
+
+    @Transactional
+    public void deleteSoft(Long userId, Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
+
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with id: " + userId));
+        if (!recipe.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You can delete only your own recipes");
+        }
+
+        if (recipe.isDeleted()) {
+            throw new ConflictException("Recipe is already deleted");
+        }
+        recipe.setDeletedAt(Instant.now());
     }
 }

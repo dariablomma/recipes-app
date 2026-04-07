@@ -1,6 +1,8 @@
 package com.daria.recipe.app.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.Instant;
 
 @Data
 @Entity
@@ -29,4 +31,27 @@ public class Recipe {
 
     @Column(length = 2000)
     private String description;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    private Instant deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant.now();
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
 }

@@ -1,4 +1,6 @@
+1. Delete, getList
 2. CreatedAt/UpdatedAt/DeletedAT
+3. Trash
 3. Валидация в БД
 4. Обработчик ошибок в БД
 5. Update dependecies ?
