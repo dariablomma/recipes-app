@@ -21,6 +21,10 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 

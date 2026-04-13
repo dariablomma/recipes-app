@@ -5,35 +5,48 @@ import com.daria.recipe.app.dto.category.CategoryResponse;
 import com.daria.recipe.app.dto.category.CategoryUpdateRequest;
 import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.exception.ConflictException;
+import com.daria.recipe.app.exception.InvalidRequestException;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
 import com.daria.recipe.app.mapper.CategoryMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
+import com.daria.recipe.app.repository.RecipeRepository;
+import com.daria.recipe.app.repository.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final UserRepository userRepository;
+    private final RecipeRepository recipeRepository;
 
     @Transactional
-    public CategoryResponse create(CategoryCreateRequest request) {
+    public CategoryResponse create(Long userId, CategoryCreateRequest request) {
         if (categoryRepository.existsByName(request.getName())) {
             throw new ConflictException("Category with such name already exists" + request.getName());
         }
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with id: " + userId));
         Category category = categoryRepository.save(categoryMapper.toEntity(request));
         return categoryMapper.toResponse(category);
     }
 
     @Transactional
-    public CategoryResponse update(Long categoryId, CategoryUpdateRequest request) {
+    public CategoryResponse update(Long userId, Long categoryId, CategoryUpdateRequest request) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Category with such id not found: " + categoryId));
         if (categoryRepository.existsByName(request.getName())) {
             throw new ConflictException("Category with such name already exists: " + request.getName());
         }
+
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with id: " + userId));
 
         categoryMapper.update(request, category);
         Category categorySaved = categoryRepository.save(category);
@@ -45,5 +58,28 @@ public class CategoryService {
         Category category = categoryRepository.findByIdWithRecipes(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Category with such id not found: " + categoryId));
         return categoryMapper.toResponse(category);
+    }
+
+    @Transactional
+    public void deleteSoft(Long userId, Long categoryId, Long categoryIdForMove) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category with such id not found: " + categoryId));
+        Category categoryForMove = categoryRepository.findById(categoryIdForMove).orElseThrow(() ->
+                new ResourceNotFoundException("Category with such id not found: " + categoryId));
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        if (categoryId.equals(categoryIdForMove)) {
+            throw new InvalidRequestException("You can not move to the same category");
+        }
+        if (!category.getUser().getId().equals(userId) || !categoryForMove.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You can interact with only your own categories");
+        }
+        if (category.isDeleted() || categoryForMove.isDeleted()) {
+            throw new ConflictException("Category is already deleted");
+        }
+
+        recipeRepository.moveRecipesToCategory(categoryId, categoryIdForMove);
+        category.setDeletedAt(Instant.now());
     }
 }

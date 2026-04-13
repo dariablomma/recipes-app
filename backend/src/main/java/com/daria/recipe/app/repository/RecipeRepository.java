@@ -2,10 +2,10 @@ package com.daria.recipe.app.repository;
 
 import com.daria.recipe.app.entity.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 @Repository
@@ -20,4 +20,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE  r.id = :id
     """)
     Optional<Recipe> findByIdWithCategoryAndUser(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE Recipe r SET r.category.id = :newCategoryId WHERE r.category.id = :oldCategoryId")
+    void moveRecipesToCategory(@Param("oldCategoryId") Long oldCategoryId,
+                              @Param("newCategoryId") Long newCategoryId);
 }

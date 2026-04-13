@@ -1,6 +1,9 @@
 package com.daria.recipe.app.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,13 +17,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Login is required")
+    @Size(min = 2, max = 200, message = "User Name must be between 2 and 200 characters")
     @Column(nullable = false, length = 200)
-    private String userName; // login name
+    private String userName;
 
+    @NotBlank(message = "Password is required")
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(length = 200)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(length = 200, unique = true, nullable = false)
     private String email;
 
     @Column(length = 200)

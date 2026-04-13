@@ -3,10 +3,12 @@ package com.daria.recipe.app.controller;
 import com.daria.recipe.app.dto.category.CategoryCreateRequest;
 import com.daria.recipe.app.dto.category.CategoryResponse;
 import com.daria.recipe.app.dto.category.CategoryUpdateRequest;
+import com.daria.recipe.app.security.CustomUserDetails;
 import com.daria.recipe.app.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,21 +19,35 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse create(@Valid @RequestBody CategoryCreateRequest request) {
-        return categoryService.create(request);
+    public CategoryResponse create(
+            @Valid @RequestBody CategoryCreateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return categoryService.create(userDetails.getId(), request);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryResponse update(
             @PathVariable("id") Long categoryId,
-            @Valid @RequestBody CategoryUpdateRequest request
+            @Valid @RequestBody CategoryUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return categoryService.update(categoryId, request);
+        return categoryService.update(userDetails.getId(), categoryId, request);
     }
 
     @GetMapping("/{id}")
     public CategoryResponse getOne(@PathVariable("id") Long categoryId) {
         return categoryService.getOne(categoryId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSoft(
+            @PathVariable("id") Long categoryId,
+            Long categoryIdForMove,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        categoryService.deleteSoft(userDetails.getId(), categoryId, categoryIdForMove);
     }
 }
