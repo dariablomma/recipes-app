@@ -1,6 +1,8 @@
 package com.daria.recipe.app.repository;
 
 import com.daria.recipe.app.entity.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,4 +15,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c JOIN FETCH c.recipes WHERE c.id = :id")
     Optional<Category> findByIdWithRecipes(@Param("id") Long id);
+
+    @Query("SELECT c FROM Category c WHERE c.user.id = :userId AND c.deletedAt IS NULL")
+    Page<Category> findAllActivePaginatedForUser(@Param("userId") Long userId, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.daria.recipe.app.service;
 
 import com.daria.recipe.app.dto.category.CategoryCreateRequest;
+import com.daria.recipe.app.dto.category.CategoryPageResponse;
 import com.daria.recipe.app.dto.category.CategoryResponse;
 import com.daria.recipe.app.dto.category.CategoryUpdateRequest;
 import com.daria.recipe.app.entity.Category;
@@ -11,12 +12,17 @@ import com.daria.recipe.app.mapper.CategoryMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
 import com.daria.recipe.app.repository.RecipeRepository;
 import com.daria.recipe.app.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,11 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+
+    private final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "id",
+            "name"
+    );
 
     @Transactional
     public CategoryResponse create(Long userId, CategoryCreateRequest request) {
@@ -35,6 +46,21 @@ public class CategoryService {
                 () -> new ResourceNotFoundException("User not found with id: " + userId));
         Category category = categoryRepository.save(categoryMapper.toEntity(request));
         return categoryMapper.toResponse(category);
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryResponse getOne(Long categoryId) {
+        Category category = categoryRepository.findByIdWithRecipes(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category with such id not found: " + categoryId));
+        return categoryMapper.toResponse(category);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CategoryPageResponse> getList(Long userId, Pageable pageable) {
+        validateSortFields(pageable.getSort());
+        Pageable stablePageable = addFallbackSort(pageable);
+        Page<Category> categoryPage = categoryRepository.findAllActivePaginatedForUser(userId,  stablePageable);
+        return categoryPage.map(categoryMapper::toPageResponse);
     }
 
     @Transactional
@@ -51,13 +77,6 @@ public class CategoryService {
         categoryMapper.update(request, category);
         Category categorySaved = categoryRepository.save(category);
         return categoryMapper.toResponse(categorySaved);
-    }
-
-    @Transactional(readOnly = true)
-    public CategoryResponse getOne(Long categoryId) {
-        Category category = categoryRepository.findByIdWithRecipes(categoryId).orElseThrow(() ->
-                new ResourceNotFoundException("Category with such id not found: " + categoryId));
-        return categoryMapper.toResponse(category);
     }
 
     @Transactional
@@ -81,5 +100,22 @@ public class CategoryService {
 
         recipeRepository.moveRecipesToCategory(categoryId, categoryIdForMove);
         category.setDeletedAt(Instant.now());
+    }
+
+    private void validateSortFields(Sort sort) {
+        for (Sort.Order order : sort) {
+            String prop = order.getProperty();
+            if (!ALLOWED_SORT_FIELDS.contains(prop)) {
+                throw new InvalidRequestException("Such property is not supported for sorting " + prop);
+            }
+        }
+    }
+
+    private Pageable addFallbackSort(Pageable pageable) {
+        Sort sort = pageable.getSort();
+        if (sort.getOrderFor("id") == null) {
+            sort = sort.and(Sort.by("id").ascending());
+        }
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 }

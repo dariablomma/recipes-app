@@ -6,7 +6,7 @@ import com.daria.recipe.app.dto.recipe.RecipeUpdateRequest;
 import com.daria.recipe.app.entity.Recipe;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RecipeMapper {
     @Mapping(target = "category", ignore = true)
     Recipe toEntity(RecipeCreateRequest request);
