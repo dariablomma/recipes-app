@@ -22,7 +22,7 @@ public class UserService {
 
     @Transactional
     public UserResponse create(SignUpRequest request) {
-        if (userRepository.existsByUsernameAndDeletedAtIsNull(request.getUserName())) {
+        if (userRepository.existsByUserNameAndDeletedAtIsNull(request.getUserName())) {
             throw new ConflictException("User with such name already exists");
         }
 
@@ -43,10 +43,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseWithPassword getMeWithPassword(String username) {
+    public UserResponseWithPassword getMeWithPassword(String userName) {
         User user  = userRepository
-                .findActiveByUserName(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User does not exist or deleted with username: " + username));
+                .findActiveByUserName(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist or deleted with username: " + userName));
         return userMapper.toResponseWithPassword(user);
     }
 }

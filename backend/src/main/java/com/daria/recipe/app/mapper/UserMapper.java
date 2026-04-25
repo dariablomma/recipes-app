@@ -28,7 +28,7 @@ public interface UserMapper {
     }
 
 
-    UserResponseWithPassword toResponseWithPassword(User user);;
+    UserResponseWithPassword toResponseWithPassword(User user);
 
-    UserResponse fromWithPasswordToResponse(UserResponseWithPassword user);;
+    UserResponse fromWithPasswordToResponse(UserResponseWithPassword user);
 }

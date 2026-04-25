@@ -13,8 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.id = :id AND u.deletedAt IS NULL")
     Optional<User> findActiveById(@Param("id") Long id);
 
-    @Query("SELECT u FROM User u WHERE u.username = :username AND u.deletedAt IS NULL")
-    Optional<User> findActiveByUserName(@Param("username") String userName);
+    @Query("SELECT u FROM User u WHERE u.userName = :userName AND u.deletedAt IS NULL")
+    Optional<User> findActiveByUserName(@Param("userName") String userName);
 
     Optional<User> findByEmail(String email);
 
@@ -30,5 +30,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByUsernameAndDeletedAtIsNull(String username);
+    boolean existsByUserNameAndDeletedAtIsNull(String username);
 }
