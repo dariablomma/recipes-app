@@ -1,4 +1,4 @@
-package com.daria.recipe.app.dto;
+package com.daria.recipe.app.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.daria.recipe.app.dto;
+package com.daria.recipe.app.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

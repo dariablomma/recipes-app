@@ -10,6 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("SELECT u FROM User u WHERE u.id = :id AND u.deletedAt IS NULL")
+    Optional<User> findActiveById(@Param("id") Long id);
+
+    @Query("SELECT u FROM User u WHERE u.username = :username AND u.deletedAt IS NULL")
+    Optional<User> findActiveByUserName(@Param("username") String userName);
+
     Optional<User> findByEmail(String email);
 
     Optional<User> findByUserName(String userName);
@@ -23,4 +29,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUserName(String userName);
 
     boolean existsByEmail(String email);
+
+    boolean existsByUsernameAndDeletedAtIsNull(String username);
 }

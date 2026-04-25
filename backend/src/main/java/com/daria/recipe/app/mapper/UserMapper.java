@@ -1,7 +1,8 @@
 package com.daria.recipe.app.mapper;
 
-import com.daria.recipe.app.dto.SignUpRequest;
-import com.daria.recipe.app.dto.UserResponse;
+import com.daria.recipe.app.dto.auth.SignUpRequest;
+import com.daria.recipe.app.dto.user.UserResponse;
+import com.daria.recipe.app.dto.user.UserResponseWithPassword;
 import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.entity.User;
 import org.mapstruct.Mapper;
@@ -25,4 +26,9 @@ public interface UserMapper {
         }
         return recipes.stream().map(Recipe::getId).toList();
     }
+
+
+    UserResponseWithPassword toResponseWithPassword(User user);;
+
+    UserResponse fromWithPasswordToResponse(UserResponseWithPassword user);;
 }
