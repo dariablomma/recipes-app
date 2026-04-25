@@ -1,5 +1,6 @@
 package com.daria.recipe.app.service;
 
+import com.daria.recipe.app.dto.category.CategoryPageResponse;
 import com.daria.recipe.app.dto.recipe.RecipeCreateRequest;
 import com.daria.recipe.app.dto.recipe.RecipeResponse;
 import com.daria.recipe.app.dto.recipe.RecipeUpdateRequest;
@@ -8,16 +9,20 @@ import com.daria.recipe.app.entity.Recipe;
 import com.daria.recipe.app.entity.User;
 import com.daria.recipe.app.exception.ConflictException;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
+import com.daria.recipe.app.helpers.PageableHelper;
 import com.daria.recipe.app.mapper.RecipeMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
 import com.daria.recipe.app.repository.RecipeRepository;
 import com.daria.recipe.app.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,12 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final RecipeMapper recipeMapper;
+    private final PageableHelper pageableHelper;
+
+    private final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "id",
+            "name"
+    );
 
     @Transactional
     public RecipeResponse createRecipe(Long userId, RecipeCreateRequest createRequest) {
@@ -43,6 +54,21 @@ public class RecipeService {
 
        Recipe savedRecipe = recipeRepository.save(recipe);
        return recipeMapper.toResponse(savedRecipe);
+    }
+
+    @Transactional(readOnly = true)
+    public RecipeResponse getOne(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
+        return recipeMapper.toResponse(recipe);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecipeResponse> getList(Long userId, Long categoryId, Pageable pageable) {
+        pageableHelper.validateSortFields(pageable.getSort(), ALLOWED_SORT_FIELDS);
+        Pageable stablePageable = pageableHelper.addFallbackSort(pageable);
+        Page<Recipe> recipePage = recipeRepository.findAllActivePaginatedForUser(userId, categoryId, stablePageable);
+        return recipePage.map(recipeMapper::toResponse);
     }
 
     @Transactional
@@ -69,13 +95,6 @@ public class RecipeService {
 
         Recipe savedRecipe = recipeRepository.save(recipe);
         return recipeMapper.toResponse(savedRecipe);
-    }
-
-    @Transactional(readOnly = true)
-    public RecipeResponse getOne(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
-                () -> new ResourceNotFoundException("Recipe not found with id: " + recipeId));
-        return recipeMapper.toResponse(recipe);
     }
 
     @Transactional

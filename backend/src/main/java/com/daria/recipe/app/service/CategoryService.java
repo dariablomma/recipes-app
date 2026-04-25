@@ -8,6 +8,7 @@ import com.daria.recipe.app.entity.Category;
 import com.daria.recipe.app.exception.ConflictException;
 import com.daria.recipe.app.exception.InvalidRequestException;
 import com.daria.recipe.app.exception.ResourceNotFoundException;
+import com.daria.recipe.app.helpers.PageableHelper;
 import com.daria.recipe.app.mapper.CategoryMapper;
 import com.daria.recipe.app.repository.CategoryRepository;
 import com.daria.recipe.app.repository.RecipeRepository;
@@ -31,6 +32,7 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final PageableHelper pageableHelper;
 
     private final Set<String> ALLOWED_SORT_FIELDS = Set.of(
             "id",
@@ -57,8 +59,8 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public Page<CategoryPageResponse> getList(Long userId, Pageable pageable) {
-        validateSortFields(pageable.getSort());
-        Pageable stablePageable = addFallbackSort(pageable);
+        pageableHelper.validateSortFields(pageable.getSort(), ALLOWED_SORT_FIELDS);
+        Pageable stablePageable = pageableHelper.addFallbackSort(pageable);
         Page<Category> categoryPage = categoryRepository.findAllActivePaginatedForUser(userId,  stablePageable);
         return categoryPage.map(categoryMapper::toPageResponse);
     }
@@ -100,22 +102,5 @@ public class CategoryService {
 
         recipeRepository.moveRecipesToCategory(categoryId, categoryIdForMove);
         category.setDeletedAt(Instant.now());
-    }
-
-    private void validateSortFields(Sort sort) {
-        for (Sort.Order order : sort) {
-            String prop = order.getProperty();
-            if (!ALLOWED_SORT_FIELDS.contains(prop)) {
-                throw new InvalidRequestException("Such property is not supported for sorting " + prop);
-            }
-        }
-    }
-
-    private Pageable addFallbackSort(Pageable pageable) {
-        Sort sort = pageable.getSort();
-        if (sort.getOrderFor("id") == null) {
-            sort = sort.and(Sort.by("id").ascending());
-        }
-        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 }
