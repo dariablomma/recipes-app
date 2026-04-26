@@ -2,29 +2,38 @@ package com.daria.recipe.app.service;
 
 import com.daria.recipe.app.dto.auth.AuthResponse;
 import com.daria.recipe.app.dto.auth.LoginRequest;
+import com.daria.recipe.app.dto.auth.RefreshTokenRequest;
 import com.daria.recipe.app.dto.auth.SignUpRequest;
 import com.daria.recipe.app.dto.user.UserResponse;
 import com.daria.recipe.app.dto.user.UserResponseWithPassword;
+import com.daria.recipe.app.entity.User;
+import com.daria.recipe.app.exception.ResourceNotFoundException;
 import com.daria.recipe.app.exception.UnauthorizedException;
 import com.daria.recipe.app.mapper.UserMapper;
-import com.daria.recipe.app.security.JwtService;
+import com.daria.recipe.app.repository.UserRepository;
+import com.daria.recipe.app.security.AccessTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final JwtService jwtService;
+    private final AccessTokenService accessTokenService;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
 
     @Transactional
     public AuthResponse signUp(SignUpRequest request) {
         UserResponse userResponse = userService.create(request);
-        return buildAuthResponse(userResponse);
+        UUID refreshToken = refreshTokenService.createRefreshToken(userResponse.getId());
+        return buildAuthResponse(userResponse, refreshToken);
     }
 
     @Transactional
@@ -34,19 +43,35 @@ public class AuthService {
             throw new UnauthorizedException("Invalid username or password");
         }
 
-        return buildAuthResponse(userMapper.fromWithPasswordToResponse(user));
+        UUID refreshToken = refreshTokenService.rotateRefreshToken(user.getId());
+        return buildAuthResponse(userMapper.fromWithPasswordToResponse(user), refreshToken);
     }
 
-    private AuthResponse buildAuthResponse(UserResponse user) {
-        String token = jwtService.generateToken(
+    @Transactional
+    public AuthResponse refresh(Long userId, RefreshTokenRequest request) {
+        User user = userRepository.findActiveById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found or deleted: " + userId));
+        refreshTokenService.verifyRefreshToken(request.refreshToken());
+        UUID refresh = refreshTokenService.rotateRefreshToken(userId);
+        return buildAuthResponse(userMapper.toResponse(user), refresh);
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        refreshTokenService.revokeRefreshToken(userId);
+    }
+
+    private AuthResponse buildAuthResponse(UserResponse user, UUID refreshToken) {
+        String token = accessTokenService.generateToken(
                 user.getUserName(),
                 user.getId(),
                 user.getEmail()
         );
 
         return AuthResponse.builder()
-                .token(token)
-                .expiresIn(jwtService.getExpiresInSeconds())
+                .accessToken(token)
+                .refreshToken(refreshToken)
+                .expiresIn(accessTokenService.getExpiresInSeconds())
                 .userName(user.getUserName())
                 .userId(user.getId())
                 .build();

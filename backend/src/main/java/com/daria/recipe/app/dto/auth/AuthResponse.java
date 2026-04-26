@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @Builder
 public class AuthResponse {
-    private String token;
+    private String accessToken;
+    private UUID refreshToken;
     @Builder.Default
     private String type = "Bearer";
     private Long expiresIn;

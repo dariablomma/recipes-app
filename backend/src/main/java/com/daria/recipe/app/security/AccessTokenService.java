@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class AccessTokenService {
     private final JwtProperties jwtProperties;
 
     public String generateToken(String userName, Long userId, String email) {
