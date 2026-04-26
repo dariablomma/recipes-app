@@ -23,17 +23,12 @@ public class User {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank(message = "Login is required")
-    @Size(min = 2, max = 200, message = "User Name must be between 2 and 200 characters")
     @Column(nullable = false, length = 200)
     private String userName;
 
-    @NotBlank(message = "Password is required")
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
     @Column(length = 200, unique = true, nullable = false)
     @EqualsAndHashCode.Include
     private String email;

@@ -1,6 +1,9 @@
 spring:
   application:
     name: recipe.app
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/recipedb
     username: recipeuser
@@ -9,7 +12,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
