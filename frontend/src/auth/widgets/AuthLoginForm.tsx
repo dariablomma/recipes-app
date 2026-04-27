@@ -6,26 +6,19 @@ import { BaseInput } from "@/shared/form-elems/BaseInput/BaseInput.tsx";
 import {BaseInputPassword} from "@/shared/form-elems/BaseInputPassword/BaseInputPassword.tsx";
 import {BaseButton} from "@/shared/form-elems/BaseButton/BaseButton.tsx";
 
-export function AuthSignUpForm(): JSX.Element {
+export function AuthLoginForm(): JSX.Element {
     const username = useInput('');
-    const email = useInput('');
     const password = useInput('');
 
     return (
         <div className={styles.form}>
-            <h2 className={styles.title}>Зарегистрироваться</h2>
+            <h2 className={styles.title}>Войти</h2>
 
             <BaseInput
                 label={"Имя пользователя"}
                 placeholder={"Имя пользователя"}
                 type={"text"}
                 {...username}
-            />
-            <BaseInput
-                label={"Email"}
-                placeholder="Введите email"
-                type={"email"}
-                {...email}
             />
 
             <BaseInputPassword
@@ -34,8 +27,8 @@ export function AuthSignUpForm(): JSX.Element {
                 {...password}
             />
 
-            <BaseButton label={"Зарегистрироваться"} />
-            <div className={styles.subtext}>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
+            <BaseButton label={"Войти"} />
+            <div className={styles.subtext}>Нет аккаунта?  <Link to="/auth/sign-up">Зарегистрироваться</Link></div>
         </div>
     )
 }
