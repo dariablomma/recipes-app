@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from 'react';
-import styles from './AuthSignUp.module.scss';
+import {useState, type FormEvent, JSX} from 'react';
+import styles from './widgets/AuthSignUpForm.module.scss';
+import {Link} from "@tanstack/react-router";
 
-export function AuthSignUp() {
+export function AuthLogin(): JSX.Element {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,7 +14,7 @@ export function AuthSignUp() {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
-            <h2 className={styles.title}>Регистрация</h2>
+            <h2 className={styles.title}>Войти</h2>
 
             <div className={styles.field}>
                 <label htmlFor="username" className={styles.label}>
@@ -63,6 +64,7 @@ export function AuthSignUp() {
             <button type="submit" className={styles.button}>
                 Зарегистрироваться
             </button>
+            <div>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
         </form>
     );
 }

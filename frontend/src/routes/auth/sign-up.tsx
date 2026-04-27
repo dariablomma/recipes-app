@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AuthSignUp } from "../../auth/AuthSignUp.tsx";
+import { AuthSignUpView } from "../../auth/views/AuthSignUpView.tsx";
 
 export const Route = createFileRoute('/auth/sign-up')({
     component: () => (
         <div>
-            <AuthSignUp />
+            <AuthSignUpView />
         </div>
     ),
 });

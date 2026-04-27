@@ -1,9 +1,9 @@
 import './App.css'
-import { AuthSignUp } from "./auth/AuthSignUp.tsx";
+import { AuthSignUpView } from "./auth/views/AuthSignUpView.tsx";
 
 function App() {
   return (
-      <AuthSignUp></AuthSignUp>
+      <AuthSignUpView></AuthSignUpView>
   )
 }
 
