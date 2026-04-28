@@ -1,6 +1,7 @@
-import { useForm, type FieldValues, type Path, type UseFormProps } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import {
+    useForm, type FieldValues, type Path, type RegisterOptions,
+    type DefaultValues
+} from 'react-hook-form';
 import type { InputHTMLAttributes } from 'react';
 
 interface ValidationProps {
@@ -9,23 +10,32 @@ interface ValidationProps {
     'aria-describedby'?: string;
 }
 
-interface FieldData {
-    props: ValidationProps;
+type ValidationSchema<T extends FieldValues> = {
+    [K in keyof T]?: RegisterOptions<T, Path<T>>;
+};
+
+interface UseFormWithValidationOptions<T extends FieldValues> {
+    initialValues: T;
+    validationSchema?: ValidationSchema<T>;
 }
 
 export function useFormWithValidation<T extends FieldValues>(
-    schema: z.ZodType<T>,
-    options?: UseFormProps<T>
+    options: UseFormWithValidationOptions<T>
 ) {
+    const { initialValues, validationSchema } = options;
+
     const form = useForm<T>({
-        resolver: zodResolver(schema),
-        ...options,
+        defaultValues: initialValues as DefaultValues<T>,
+        mode: 'onTouched',
     });
 
-    const { errors, isValid } = form.formState;
+    const { errors, touchedFields, isValid } = form.formState;
+
+    const isTouched = Object.keys(touchedFields).length > 0;
 
     const getField = <K extends Path<T>>(name: K) => {
-        const { onChange, onBlur, ref, ...rest } = form.register(name);
+        const rules = validationSchema?.[name] as RegisterOptions<T, K> | undefined;
+        const { onChange, onBlur, ref, ...rest } = form.register(name, rules);
         const error = errors[name]?.message as string | undefined;
 
         const props: InputHTMLAttributes<HTMLInputElement> & ValidationProps = {
@@ -38,12 +48,12 @@ export function useFormWithValidation<T extends FieldValues>(
         return {
             name,
             props,
-            model: form.watch(name),
+            value: form.watch(name),
         };
     };
 
     const getFields = () => {
-        const keys = Object.keys(form.getValues()) as Path<T>[];
+        const keys = Object.keys(initialValues) as Path<T>[];
         return Object.fromEntries(
             keys.map((key) => [key, getField(key)])
         ) as Record<Path<T>, ReturnType<typeof getField<Path<T>>>>;
@@ -53,18 +63,24 @@ export function useFormWithValidation<T extends FieldValues>(
         return await form.trigger();
     };
 
+    const resetForm = () => {
+        form.reset(initialValues);
+    };
+
     const isFormValidAndTouched = isTouched && isValid && Object.keys(errors).length === 0;
     const isFormInvalid = !isValid && Object.keys(errors).length > 0;
+    const isFormValid = isValid && !Object.keys(errors).length;
 
     return {
         form,
         getField,
         getFields,
         validateForm,
+        resetForm,
         isFormValidAndTouched,
         isFormInvalid,
+        isFormValid,
         isTouched,
-        handleSubmit: form.handleSubmit,
         errors,
     };
 }
