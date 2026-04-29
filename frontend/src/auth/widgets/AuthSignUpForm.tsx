@@ -24,7 +24,6 @@ export function AuthSignUpForm(): JSX.Element {
                 type={"text"}
                 required={true}
                 {...fields.username.props}
-                className={fields.username.props.error ? styles.inputError : ''}
             />
             <BaseInput
                 label={"Email"}
