@@ -1,13 +1,8 @@
 import { useFormWithValidation } from "@/shared/hooks/useFormWithValidation.ts";
-
-interface SignUpFormData {
-    username: string;
-    email: string;
-    password: string;
-}
+import type {SignUpFormData} from "@/auth/types";
 
 export function useSignUpForm() {
-    const { getFields, isFormInvalid, isFormValidAndTouched, validateForm } =
+    const { getFields, isFormInvalid, isFormValidAndTouched, validateForm, form, handleSubmit } =
         useFormWithValidation<SignUpFormData>({
             initialValues: {
                 username: '',
@@ -37,9 +32,11 @@ export function useSignUpForm() {
     const fields = getFields();
 
     return {
+        form,
         fields,
         isFormInvalid,
         isFormValidAndTouched,
         validateForm,
+        handleSubmit,
     };
 }

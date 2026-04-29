@@ -2,7 +2,7 @@ import {
     useForm, type FieldValues, type Path, type RegisterOptions,
     type DefaultValues
 } from 'react-hook-form';
-import type { InputHTMLAttributes } from 'react';
+import { useState, type InputHTMLAttributes } from 'react';
 
 interface ValidationProps {
     error?: string;
@@ -25,21 +25,21 @@ export function useFormWithValidation<T extends FieldValues>(
     const { initialValues, validationSchema } = options;
 
     const form = useForm<T>({
-        defaultValues: initialValues as DefaultValues<T>,
+        defaultValues: initialValues,
         mode: 'onTouched',
     });
 
     const { errors, touchedFields, isValid } = form.formState;
-
-    const isTouched = Object.keys(touchedFields).length > 0;
+    const [submitted, setSubmitted] = useState(false);
 
     const getField = <K extends Path<T>>(name: K) => {
         const rules = validationSchema?.[name] as RegisterOptions<T, K> | undefined;
-        const { onChange, onBlur, ref, ...rest } = form.register(name, rules);
-        const error = errors[name]?.message as string | undefined;
+        const fieldError = errors[name]?.message as string | undefined;
+        const isFieldTouched = touchedFields[name];
+        const error = (isFieldTouched || submitted) ? fieldError : undefined;
 
         const props: InputHTMLAttributes<HTMLInputElement> & ValidationProps = {
-            ...rest,
+            ...form.register(name, rules),
             'aria-invalid': !!error,
             'aria-describedby': error ? `${name}-error` : undefined,
             error,
@@ -48,7 +48,6 @@ export function useFormWithValidation<T extends FieldValues>(
         return {
             name,
             props,
-            value: form.watch(name),
         };
     };
 
@@ -60,16 +59,18 @@ export function useFormWithValidation<T extends FieldValues>(
     };
 
     const validateForm = async () => {
+        setSubmitted(true);
         return await form.trigger();
     };
 
     const resetForm = () => {
+        setSubmitted(false);
         form.reset(initialValues);
     };
 
-    const isFormValidAndTouched = isTouched && isValid && Object.keys(errors).length === 0;
+    const isTouched = Object.keys(touchedFields).length > 0;
+    const isFormValidAndTouched = (isTouched || submitted) && isValid && Object.keys(errors).length === 0;
     const isFormInvalid = !isValid && Object.keys(errors).length > 0;
-    const isFormValid = isValid && !Object.keys(errors).length;
 
     return {
         form,
@@ -79,8 +80,9 @@ export function useFormWithValidation<T extends FieldValues>(
         resetForm,
         isFormValidAndTouched,
         isFormInvalid,
-        isFormValid,
         isTouched,
         errors,
+        handleSubmit: form.handleSubmit,
+        watch: form.watch,
     };
 }

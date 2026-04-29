@@ -2,13 +2,16 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 16px;
 }
 
 .label {
   font-size: 14px;
   font-weight: 500;
   color: #333;
+}
+
+.requiredStar {
+  color: #dc2626;
 }
 
 .input {
@@ -30,4 +33,17 @@
     background: #ffffff;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   }
+}
+
+.inputError {
+  border-color: #dc2626;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+}
+
+.errorText {
+  color: #dc2626;
+  font-size: 13px;
 }

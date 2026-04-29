@@ -1,41 +1,50 @@
 import type {JSX} from "react";
 import styles from "./AuthForm.module.scss";
 import {Link} from "@tanstack/react-router";
-import {useInput} from "@/shared/hooks/useInput.ts";
 import { BaseInput } from "@/shared/form-elems/BaseInput/BaseInput.tsx";
 import {BaseInputPassword} from "@/shared/form-elems/BaseInputPassword/BaseInputPassword.tsx";
 import {BaseButton} from "@/shared/form-elems/BaseButton/BaseButton.tsx";
+import { useSignUpForm } from "@/auth/hooks/useAuthSignUpForm.ts";
+import type {SignUpFormData} from "@/auth/types";
 
 export function AuthSignUpForm(): JSX.Element {
-    const username = useInput('');
-    const email = useInput('');
-    const password = useInput('');
+    const { isFormInvalid, fields, handleSubmit } = useSignUpForm();
+
+    const onSubmit = (data: SignUpFormData) => {
+        console.log('Валидные данные:', data);
+    };
 
     return (
-        <div className={styles.form}>
+        <form className={styles.form} noValidate={true} onSubmit={handleSubmit(onSubmit)}>
             <h2 className={styles.title}>Зарегистрироваться</h2>
 
             <BaseInput
                 label={"Имя пользователя"}
                 placeholder={"Имя пользователя"}
                 type={"text"}
-                {...username}
+                required={true}
+                {...fields.username.props}
+                className={fields.username.props.error ? styles.inputError : ''}
             />
             <BaseInput
                 label={"Email"}
                 placeholder="Введите email"
                 type={"email"}
-                {...email}
+                required={true}
+                {...fields.email.props}
             />
 
             <BaseInputPassword
                 label={"Пароль"}
                 placeholder="Введите пароль"
-                {...password}
+                required={true}
+                {...fields.password.props}
             />
 
-            <BaseButton label={"Зарегистрироваться"} />
+            <BaseButton type={"submit"} disabled={isFormInvalid}>
+                Зарегистрироваться
+            </BaseButton>
             <div className={styles.subtext}>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
-        </div>
+        </form>
     )
 }
