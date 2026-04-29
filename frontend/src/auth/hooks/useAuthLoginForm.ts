@@ -5,11 +5,11 @@ export function useLoginForm() {
     const { getFields, isFormInvalid, isFormValidAndTouched, validateForm, form, handleSubmit } =
         useFormWithValidation<LoginFormData>({
             initialValues: {
-                username: '',
+                userName: '',
                 password: '',
             },
             validationSchema: {
-                username: {
+                userName: {
                     required: 'Обязательное поле',
                     minLength: { value: 3, message: 'Минимум 3 символа' },
                     maxLength: { value: 20, message: 'Максимум 20 символов' },

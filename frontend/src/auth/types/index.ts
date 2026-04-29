@@ -1,10 +1,10 @@
 export interface SignUpFormData {
-    username: string;
+    userName: string;
     email: string;
     password: string;
 }
 
 export interface LoginFormData {
-    username: string;
+    userName: string;
     password: string;
 }

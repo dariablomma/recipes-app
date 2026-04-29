@@ -23,7 +23,7 @@ export function AuthLoginForm(): JSX.Element {
                 placeholder={"Имя пользователя"}
                 type={"text"}
                 required={true}
-                {...fields.username.props}
+                {...fields.userName.props}
             />
 
             <BaseInputPassword
@@ -34,7 +34,7 @@ export function AuthLoginForm(): JSX.Element {
             />
 
             <BaseButton type={"submit"} disabled={isFormInvalid}>
-                Войти
+                Зарегистрироваться
             </BaseButton>
             <div className={styles.subtext}>Нет аккаунта?  <Link to="/auth/sign-up">Зарегистрироваться</Link></div>
         </form>

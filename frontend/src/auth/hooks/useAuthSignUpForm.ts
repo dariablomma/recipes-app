@@ -5,12 +5,12 @@ export function useSignUpForm() {
     const { getFields, isFormInvalid, isFormValidAndTouched, validateForm, form, handleSubmit } =
         useFormWithValidation<SignUpFormData>({
             initialValues: {
-                username: '',
+                userName: '',
                 email: '',
                 password: '',
             },
             validationSchema: {
-                username: {
+                userName: {
                     required: 'Обязательное поле',
                     minLength: { value: 3, message: 'Минимум 3 символа' },
                     maxLength: { value: 20, message: 'Максимум 20 символов' },

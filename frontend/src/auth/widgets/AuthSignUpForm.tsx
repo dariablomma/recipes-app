@@ -5,13 +5,15 @@ import { BaseInput } from "@/shared/form-elems/BaseInput/BaseInput.tsx";
 import {BaseInputPassword} from "@/shared/form-elems/BaseInputPassword/BaseInputPassword.tsx";
 import {BaseButton} from "@/shared/form-elems/BaseButton/BaseButton.tsx";
 import { useSignUpForm } from "@/auth/hooks/useAuthSignUpForm.ts";
+import { useSignUp } from "@/auth/hooks/useSignUp.ts";
 import type {SignUpFormData} from "@/auth/types";
 
 export function AuthSignUpForm(): JSX.Element {
     const { isFormInvalid, fields, handleSubmit } = useSignUpForm();
+    const { signUp, isPending, serverError } = useSignUp();
 
     const onSubmit = (data: SignUpFormData) => {
-        console.log('Валидные данные:', data);
+        signUp(data);
     };
 
     return (
@@ -23,7 +25,7 @@ export function AuthSignUpForm(): JSX.Element {
                 placeholder={"Имя пользователя"}
                 type={"text"}
                 required={true}
-                {...fields.username.props}
+                {...fields.userName.props}
             />
             <BaseInput
                 label={"Email"}
@@ -40,8 +42,14 @@ export function AuthSignUpForm(): JSX.Element {
                 {...fields.password.props}
             />
 
+            {serverError && (
+                <div className={styles.error} role="alert">
+                    {serverError}
+                </div>
+            )}
+
             <BaseButton type={"submit"} disabled={isFormInvalid}>
-                Зарегистрироваться
+                {isPending ? 'Загрузка...' : 'Зарегистрироваться'}
             </BaseButton>
             <div className={styles.subtext}>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
         </form>
