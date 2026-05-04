@@ -1,11 +1,18 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { useAuthCheck } from '@/auth/hooks/useAuthCheck';
 
 export const Route = createRootRoute({
-    component: () => (
+    component: RootLayout,
+});
+
+function RootLayout() {
+    useAuthCheck();
+
+    return (
         <div>
             <main>
                 <Outlet />
             </main>
         </div>
-    ),
-});
+    );
+}

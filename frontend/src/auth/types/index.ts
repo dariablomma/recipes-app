@@ -1,3 +1,5 @@
+export * from "./api";
+
 export interface SignUpFormData {
     userName: string;
     email: string;

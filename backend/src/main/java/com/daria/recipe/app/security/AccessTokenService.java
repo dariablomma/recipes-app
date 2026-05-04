@@ -48,19 +48,18 @@ public class AccessTokenService {
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
-    public long getExpiresInSeconds() {
-        return jwtProperties.getExpiration() / 1000;
+    public Instant getExpiresAt() {
+        return jwtProperties.getExpiration();
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
         Instant now = Instant.now();
-        Instant expiry = now.plusMillis(jwtProperties.getExpiration());
 
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(expiry))
+                .expiration(Date.from(jwtProperties.getExpiration()))
                 .signWith(getSignKey())
                 .compact();
     }

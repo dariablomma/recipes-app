@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.time.Duration;
+import java.time.Instant;
 
 @Data
 @ConfigurationProperties(prefix = "jwt")
@@ -18,7 +19,7 @@ public class JwtProperties {
     @Builder.Default
     private Duration expiration = Duration.ofHours(24);
 
-    public long getExpiration() {
-        return expiration.toMillis();
+    public Instant getExpiration() {
+        return Instant.now().plus(expiration);
     }
 }

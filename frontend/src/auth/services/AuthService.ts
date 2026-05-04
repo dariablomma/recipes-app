@@ -1,17 +1,5 @@
 import { api } from '@/core/api/AxiosInstance';
-import type {SignUpFormData} from "@/auth/types";
-
-export interface JwtToken {
-    access: string;
-    refresh: string;
-    expires: string;
-}
-
-interface AuthError {
-    reason?: string;
-    message?: string;
-    force?: boolean;
-}
+import type {AuthError, AuthResponse, JwtTokenMin, SignUpFormData} from "@/auth/types";
 
 const ACCESS_KEY = 'token:access';
 const REFRESH_KEY = 'token:refresh';
@@ -19,7 +7,7 @@ const EXPIRES_KEY = 'token:expires';
 const ERROR_KEY = 'auth:error';
 
 export class AuthService {
-    public static token: JwtToken | undefined;
+    public static token: JwtTokenMin | undefined;
 
     static init() {
         const access = localStorage.getItem(ACCESS_KEY);
@@ -31,14 +19,16 @@ export class AuthService {
         }
     }
 
-    static setToken(token: JwtToken) {
-        this.token = token;
+    static setToken(authResponse: AuthResponse) {
+        this.token = {
+            expires: authResponse.expiresAt,
+            access: authResponse.accessToken,
+            refresh: authResponse.refreshToken
+        };
 
-        localStorage.setItem(ACCESS_KEY, token.access);
-        localStorage.setItem(REFRESH_KEY, token.refresh);
-        localStorage.setItem(EXPIRES_KEY, token.expires);
-
-        return token;
+        localStorage.setItem(ACCESS_KEY, this.token.access);
+        localStorage.setItem(REFRESH_KEY, this.token.refresh);
+        localStorage.setItem(EXPIRES_KEY, this.token.expires);
     }
 
     static removeToken() {
@@ -69,14 +59,14 @@ export class AuthService {
     }
 
     static async signUp(data: SignUpFormData) {
-        const response = await api.post<JwtToken>('/auth/signup', data);
+        const response = await api.post<AuthResponse>('/auth/signup', data);
 
         this.setToken(response.data);
         return response.data;
     }
 
     static async login(login: string, password: string) {
-        const response = await api.post<JwtToken>('/auth/sign-in', {
+        const response = await api.post<AuthResponse>('/auth/sign-in', {
             login,
             password,
         });
@@ -102,7 +92,7 @@ export class AuthService {
         if (!this.token?.refresh) return false;
 
         try {
-            const response = await api.post<JwtToken>('/auth/refresh', {
+            const response = await api.post<AuthResponse>('/auth/refresh', {
                 refresh: this.token.refresh,
             });
 
@@ -117,7 +107,7 @@ export class AuthService {
         return false;
     }
 
-    static async tryRefreshToken(): Promise<JwtToken> {
+    static async tryRefreshToken(): Promise<JwtTokenMin> {
         if (this.token && this.isAuthenticated) {
             return this.token;
         }

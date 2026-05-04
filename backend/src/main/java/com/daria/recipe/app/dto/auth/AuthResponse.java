@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -14,7 +15,7 @@ public class AuthResponse {
     private UUID refreshToken;
     @Builder.Default
     private String type = "Bearer";
-    private Long expiresIn;
+    private Instant expiresAt;
     private String userName;
     private Long userId;
 }

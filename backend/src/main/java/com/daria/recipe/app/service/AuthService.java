@@ -71,7 +71,7 @@ public class AuthService {
         return AuthResponse.builder()
                 .accessToken(token)
                 .refreshToken(refreshToken)
-                .expiresIn(accessTokenService.getExpiresInSeconds())
+                .expiresAt(accessTokenService.getExpiresAt())
                 .userName(user.getUserName())
                 .userId(user.getId())
                 .build();
