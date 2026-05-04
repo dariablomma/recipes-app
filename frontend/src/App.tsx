@@ -1,4 +1,3 @@
-import './App.css'
 import { AuthSignUpView } from "./auth/views/AuthSignUpView.tsx";
 
 function App() {

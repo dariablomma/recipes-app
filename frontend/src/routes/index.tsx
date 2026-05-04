@@ -4,9 +4,9 @@ import { Link } from '@tanstack/react-router';
 export const Route = createFileRoute('/')({
     component: () => (
         <div>
-            <h1>Recipes list</h1>
-            <p>Coming soon</p>
-            <Link to="/auth/sign-up">Регистрация</Link>
+            <h1>Доброе пожаловать в твою записную книжку рецептов!</h1>
+            <p></p>
+            <Link to="/recipes">К списку рецептов</Link>
         </div>
     ),
 });
