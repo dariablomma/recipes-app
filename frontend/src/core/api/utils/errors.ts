@@ -14,6 +14,11 @@ export const extractErrorMessage = (error: AxiosError): string => {
 
     const errorResponse = data as ErrorResponse;
 
+    if (errorResponse.errors && Object.keys(errorResponse.errors).length > 0) {
+        const errorMessages = Object.values(errorResponse.errors);
+        return errorMessages.join('\n');
+    }
+
     if (errorResponse.message) {
         return errorResponse.message;
     }

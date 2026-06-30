@@ -1,5 +1,5 @@
 import { api } from '@/core/api/AxiosInstance';
-import type {AuthError, AuthResponse, JwtTokenMin, SignUpFormData} from "@/auth/types";
+import type {AuthError, AuthResponse, JwtTokenMin, LoginFormData, SignUpFormData} from "@/auth/types";
 
 const ACCESS_KEY = 'token:access';
 const REFRESH_KEY = 'token:refresh';
@@ -65,11 +65,8 @@ export class AuthService {
         return response.data;
     }
 
-    static async login(login: string, password: string) {
-        const response = await api.post<AuthResponse>('/auth/sign-in', {
-            login,
-            password,
-        });
+    static async login(data: LoginFormData) {
+        const response = await api.post<AuthResponse>('/auth/login', data);
 
         if (response.data) {
             this.setToken(response.data);

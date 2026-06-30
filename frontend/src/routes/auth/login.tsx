@@ -3,8 +3,6 @@ import { AuthLoginView } from "@/auth/views/AuthLoginView.tsx";
 
 export const Route = createFileRoute('/auth/login')({
     component: () => (
-        <div>
             <AuthLoginView />
-        </div>
     ),
 });

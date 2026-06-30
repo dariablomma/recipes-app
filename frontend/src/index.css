@@ -17,6 +17,11 @@ p {
   overflow-wrap: break-word;
 }
 
+main {
+  width: 100%;
+  height: 100%;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;

@@ -9,10 +9,8 @@ function RootLayout() {
     useAuthCheck();
 
     return (
-        <div>
-            <main>
-                <Outlet />
-            </main>
-        </div>
+        <main>
+            <Outlet />
+        </main>
     );
 }

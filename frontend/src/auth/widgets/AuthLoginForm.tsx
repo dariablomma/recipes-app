@@ -6,37 +6,46 @@ import {BaseInputPassword} from "@/shared/form-elems/BaseInputPassword/BaseInput
 import {BaseButton} from "@/shared/form-elems/BaseButton/BaseButton.tsx";
 import { useLoginForm } from "@/auth/hooks/useAuthLoginForm.ts";
 import type {LoginFormData} from "@/auth/types";
+import {useLogin} from "@/auth/hooks/useLogin.ts";
+import {BaseErrorMessage} from "@/shared/form-elems/BaseErrorMessage/BaseErrorMessage.tsx";
 
 export function AuthLoginForm(): JSX.Element {
     const {  isFormInvalid, fields, handleSubmit} = useLoginForm();
+    const { login, isPending, serverError } = useLogin();
 
     const onSubmit = (data: LoginFormData) => {
-        console.log('Валидные данные:', data);
+        login(data)
     };
 
     return (
-        <form className={styles.form} noValidate={true} onSubmit={handleSubmit(onSubmit)}>
-            <h2 className={styles.title}>Войти</h2>
+        <div className={styles.formWrapper}>
+            <form className={styles.form} noValidate={true} onSubmit={handleSubmit(onSubmit)}>
+                <h2 className={styles.title}>Войти</h2>
 
-            <BaseInput
-                label={"Имя пользователя"}
-                placeholder={"Имя пользователя"}
-                type={"text"}
-                required={true}
-                {...fields.userName.props}
-            />
+                <BaseInput
+                    label={"Имя пользователя"}
+                    placeholder={"Имя пользователя"}
+                    type={"text"}
+                    required={true}
+                    {...fields.userName.props}
+                />
 
-            <BaseInputPassword
-                label={"Пароль"}
-                placeholder="Введите пароль"
-                required={true}
-                {...fields.password.props}
-            />
+                <BaseInputPassword
+                    label={"Пароль"}
+                    placeholder="Введите пароль"
+                    required={true}
+                    {...fields.password.props}
+                />
 
-            <BaseButton type={"submit"} disabled={isFormInvalid}>
-                Зарегистрироваться
-            </BaseButton>
-            <div className={styles.subtext}>Нет аккаунта?  <Link to="/auth/sign-up">Зарегистрироваться</Link></div>
-        </form>
+                {serverError && (
+                    <BaseErrorMessage error={serverError}/>
+                )}
+
+                <BaseButton type={"submit"} disabled={isFormInvalid}>
+                    {isPending ? 'Загрузка...' : 'Войти'}
+                </BaseButton>
+                <div className={styles.subtext}>Нет аккаунта?  <Link to="/auth/sign-up">Зарегистрироваться</Link></div>
+            </form>
+        </div>
     )
 }

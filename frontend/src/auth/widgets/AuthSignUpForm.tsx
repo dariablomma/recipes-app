@@ -7,6 +7,7 @@ import {BaseButton} from "@/shared/form-elems/BaseButton/BaseButton.tsx";
 import { useSignUpForm } from "@/auth/hooks/useAuthSignUpForm.ts";
 import { useSignUp } from "@/auth/hooks/useSignUp.ts";
 import type {SignUpFormData} from "@/auth/types";
+import {BaseErrorMessage} from "@/shared/form-elems/BaseErrorMessage/BaseErrorMessage.tsx";
 
 export function AuthSignUpForm(): JSX.Element {
     const { isFormInvalid, fields, handleSubmit } = useSignUpForm();
@@ -17,41 +18,41 @@ export function AuthSignUpForm(): JSX.Element {
     };
 
     return (
-        <form className={styles.form} noValidate={true} onSubmit={handleSubmit(onSubmit)}>
-            <h2 className={styles.title}>Зарегистрироваться</h2>
+        <div className={styles.formWrapper}>
+            <form className={styles.form} noValidate={true} onSubmit={handleSubmit(onSubmit)}>
+                <h2 className={styles.title}>Зарегистрироваться</h2>
 
-            <BaseInput
-                label={"Имя пользователя"}
-                placeholder={"Имя пользователя"}
-                type={"text"}
-                required={true}
-                {...fields.userName.props}
-            />
-            <BaseInput
-                label={"Email"}
-                placeholder="Введите email"
-                type={"email"}
-                required={true}
-                {...fields.email.props}
-            />
+                <BaseInput
+                    label={"Имя пользователя"}
+                    placeholder={"Имя пользователя"}
+                    type={"text"}
+                    required={true}
+                    {...fields.userName.props}
+                />
+                <BaseInput
+                    label={"Email"}
+                    placeholder="Введите email"
+                    type={"email"}
+                    required={true}
+                    {...fields.email.props}
+                />
 
-            <BaseInputPassword
-                label={"Пароль"}
-                placeholder="Введите пароль"
-                required={true}
-                {...fields.password.props}
-            />
+                <BaseInputPassword
+                    label={"Пароль"}
+                    placeholder="Введите пароль"
+                    required={true}
+                    {...fields.password.props}
+                />
 
-            {serverError && (
-                <div className={styles.error} role="alert">
-                    {serverError}
-                </div>
-            )}
+                {serverError && (
+                    <BaseErrorMessage error={serverError}/>
+                )}
 
-            <BaseButton type={"submit"} disabled={isFormInvalid}>
-                {isPending ? 'Загрузка...' : 'Зарегистрироваться'}
-            </BaseButton>
-            <div className={styles.subtext}>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
-        </form>
+                <BaseButton type={"submit"} disabled={isFormInvalid}>
+                    {isPending ? 'Загрузка...' : 'Зарегистрироваться'}
+                </BaseButton>
+                <div className={styles.subtext}>Уже есть аккаунт?  <Link to="/auth/login">Войти</Link></div>
+            </form>
+        </div>
     )
 }

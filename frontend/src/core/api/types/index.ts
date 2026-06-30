@@ -10,4 +10,5 @@ export interface ErrorResponse {
     message: string;
     timestamp: string;
     path: string;
+    errors?: Record<string, string>;
 }
